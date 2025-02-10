@@ -4,108 +4,211 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Recommender System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f1e6d8; /* Ivory background for classic feel */
-            color: #3c3c3c; /* Dark grey text */
-            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #2b2d42, #121212);
+            font-family: 'Poppins', sans-serif;
+            color: #f4f4f4;
+            overflow-x: hidden;
+            animation: bgColorChange 15s infinite alternate;
+        }
+
+        @keyframes bgColorChange {
+            0% { background: linear-gradient(135deg, #2b2d42, #121212); }
+            50% { background: linear-gradient(135deg, #1e1e2f, #343746); }
+            100% { background: linear-gradient(135deg, #2b2d42, #121212); }
         }
 
         .navbar {
-            background-color: #800000; /* Deep Maroon color for the navbar */
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
         }
 
-        .navbar-brand, .nav a {
-            color: #f1e6d8; /* Ivory text */
+        .navbar-brand, .nav-link {
+            color: #00ffd1;
             font-weight: bold;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
         }
 
-        .nav a {
-            margin-right: 20px;
-            text-decoration: none;
+        .navbar-brand:hover, .nav-link:hover {
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
         }
+         .navbar-toggler {
+        border: none; /* Remove default border */
+    }
 
-        .nav a:hover {
-            color: #ffd700; /* Gold color on hover */
-            text-decoration: underline;
-        }
+    .custom-toggler-icon {
+        display: inline-block;
+        width: 30px;
+        height: 3px;
+        background: linear-gradient(90deg, #00ffcc, #ff00ff, #ffea00);
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .custom-toggler-icon::before,
+    .custom-toggler-icon::after {
+        content: '';
+        width: 30px;
+        height: 3px;
+        background: linear-gradient(90deg, #00ffcc, #ff00ff, #ffea00);
+        border-radius: 5px;
+        position: absolute;
+        left: 0;
+        transition: all 0.3s ease;
+    }
+
+    .custom-toggler-icon::before {
+        top: -8px;
+    }
+
+    .custom-toggler-icon::after {
+        top: 8px;
+    }
+
+    .navbar-toggler.collapsed .custom-toggler-icon {
+        background: #ff00ff;
+    }
+
+    .navbar-toggler.collapsed .custom-toggler-icon::before {
+        top: 0;
+        transform: rotate(45deg);
+    }
+
+    .navbar-toggler.collapsed .custom-toggler-icon::after {
+        top: 0;
+        transform: rotate(-45deg);
+    }
 
         h1 {
-            font-size: 3rem;
-            margin-top: 20px;
+            font-size: 4rem;
             text-align: center;
-            color: #800000;
+            margin-top: 60px;
+            background: linear-gradient(90deg, #00ffcc, #ff00ff, #ffea00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textGlow 5s infinite alternate;
         }
 
-        .card {
-            background-color: #f9f9f9; /* Light gray cards */
-            color: #3c3c3c;
-            border: 1px solid #ccc;
-            transition: transform 0.3s ease;
-            cursor: pointer;
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 15px #00ffcc, 0 0 30px #ff00ff; }
+            100% { text-shadow: 0 0 25px #ffea00, 0 0 40px #ff00ff; }
         }
 
-        .card img {
-    width: 100%;  /* Ensure full width */
-    height: auto; /* Set height to auto for proportional scaling */
-    object-fit: contain;  /* Ensures the image scales to fit the card without being cropped */
-    transition: transform 0.3s ease;
-}
-
-        .card-body h2 {
-            font-size: 1.2rem;
-            margin-top: 10px;
-            text-align: center;
-            color: #800000;
+        .divider {
+            height: 5px;
+            background: linear-gradient(90deg, #00ffcc, #ff00ff, #ffea00);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.7);
+            border-radius: 50px;
+            margin: 30px auto;
+            width: 70%;
+            animation: moveDivider 8s infinite alternate;
         }
 
-        .card:hover {
-            transform: scale(1.05); /* Slightly enlarge the card on hover */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .card img:hover {
-            transform: scale(1.1); /* Slightly enlarge image on hover */
+        @keyframes moveDivider {
+            0% { width: 50%; }
+            100% { width: 80%; }
         }
 
         .book-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 50px 20px;
         }
 
-        .modal-content {
-            display: flex;
-            justify-content: space-between;
-            background-color: #fff;
-            border-radius: 10px;
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
         }
 
-        .modal-body {
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.3), rgba(0, 255, 204, 0.3));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(255, 0, 255, 0.6);
+        }
+
+        .card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .card-body {
             padding: 20px;
+            text-align: center;
+            position: relative;
         }
 
-        .modal-body img {
-            max-width: 300px;
-            margin-left: 20px;
+        .card-body h2 {
+            font-size: 1.5rem;
+            color: #00ffcc;
+            transition: color 0.3s ease;
         }
 
-        .modal-body h3, .modal-body p {
-            font-size: 1.1rem;
+        .card-body p {
+            font-size: 1rem;
+            color: #e0e0e0;
+        }
+
+        .card-body h2:hover {
+            color: #ff00ff;
+        }
+
+        .stars span {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .stars span:hover {
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            .card img {
+                height: 200px;
+            }
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg">
+<nav class="navbar navbar-expand-lg fixed-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">My Book Recommender</a>
-        <br>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav">
+        <a class="navbar-brand" href="/">Book Recommender</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="custom-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="/recommend">Recommend</a></li>
             </ul>
@@ -113,49 +216,36 @@
     </div>
 </nav>
 
-<div class="container">
-    <h1 class="text-center">Top 50 Books</h1>
+<h1>Explore the Best Books</h1>
+<div class="divider"></div>
 
+<div class="container">
     <div class="book-container">
         {% for i in range(book_name|length) %}
-        <div class="card" style="width: 18rem;" data-bs-toggle="modal" data-bs-target="#bookModal{{ loop.index }}">
-            <img class="card-img-top" src="{{ book_image[i] }}" >
+        <div class="card">
+            <img src="{{ book_image[i] }}" alt="Book Cover">
             <div class="card-body">
                 <h2>{{ book_name[i] }}</h2>
-                <h2>Author: {{ book_authr[i] }}</h2>
-                <h2>Year: {{ book_year[i] }}</h2>
-                <h2>Votes: {{ book_ratings[i] }}</h2>
-                <h2>Rating:
-                    {% if book_avg_ratings[i] > 5 %}
-                        5
-                    {% else %}
-                        {{ book_avg_ratings[i]|round(2) }}
-                    {% endif %}
-                </h2>
-            </div>
-        </div>
-
-        <!-- Modal for each book -->
-        <div class="modal fade" id="bookModal{{ loop.index }}" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div>
-                            <h3>{{ book_name[i] }}</h3>
-                            <p><strong>Author:</strong> {{ book_authr[i] }}</p>
-                            <p><strong>Year:</strong> {{ book_year[i] }}</p>
-                            <p><strong>Votes:</strong> {{ book_ratings[i] }}</p>
-
-                        </div>
-                        <img src="{{ book_image[i] }}" alt="Book Image">
-                    </div>
-                </div>
+                <p><strong>Author:</strong> {{ book_authr[i] }}</p>
+                <p><strong>Year:</strong> {{ book_year[i] }}</p>
+                <p><strong>Votes:</strong> {{ book_ratings[i] }}</p>
+                <p><strong>Rating:</strong>
+                    <span class="stars">
+                        {% set rating = book_avg_ratings[i] | default(0) | round(0, 'floor') %}
+                        {% for _ in range(rating | int) %}
+                            <span style="color: gold;">★</span>
+                        {% endfor %}
+                        {% for _ in range(5 - (rating | int)) %}
+                            <span style="color: gray;">☆</span>
+                        {% endfor %}
+                    </span>
+                </p>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-TT3z5l1zmFjWFOzTNVYm8FfyekZT+3pONg9rsDQ9IUujMlOWrLGMHspF9b8dd8Sy" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

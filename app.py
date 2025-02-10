@@ -75,7 +75,7 @@ def recommend():
 
     return render_template('recomend.html', data=data, message="Recommendations found!")
 
-# Ensure correct PORT usage for Vercel
+# Ensure correct PORT usage for Vercel or other platforms
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

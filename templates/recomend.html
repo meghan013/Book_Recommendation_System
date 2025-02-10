@@ -4,110 +4,182 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Recommender System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f1e6d8; /* Ivory background for classic feel */
-            color: #3c3c3c; /* Dark grey text */
-            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #2b2d42, #121212);
+            font-family: 'Poppins', sans-serif;
+            color: #f4f4f4;
+            animation: bgColorChange 15s infinite alternate;
+        }
+
+        @keyframes bgColorChange {
+            0% { background: linear-gradient(135deg, #2b2d42, #121212); }
+            50% { background: linear-gradient(135deg, #1e1e2f, #343746); }
+            100% { background: linear-gradient(135deg, #2b2d42, #121212); }
         }
 
         .navbar {
-            background-color: #800000; /* Deep Maroon color for the navbar */
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
         }
 
-        .navbar-brand, .nav a {
-            color: #f1e6d8; /* Ivory text */
+        .navbar-brand, .nav-link {
+            color: #00ffd1;
             font-weight: bold;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
         }
 
-        .nav a {
-            margin-right: 20px;
-            text-decoration: none;
+        .navbar-brand:hover, .nav-link:hover {
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
         }
 
-        .nav a:hover {
-            color: #ffd700; /* Gold color on hover */
-            text-decoration: underline;
-        }
+          .navbar-toggler {
+        border: none; /* Remove default border */
+    }
+
+    .custom-toggler-icon {
+        display: inline-block;
+        width: 30px;
+        height: 3px;
+        background: linear-gradient(90deg, #00ffcc, #ff00ff, #ffea00);
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .custom-toggler-icon::before,
+    .custom-toggler-icon::after {
+        content: '';
+        width: 30px;
+        height: 3px;
+        background: linear-gradient(90deg, #00ffcc, #ff00ff, #ffea00);
+        border-radius: 5px;
+        position: absolute;
+        left: 0;
+        transition: all 0.3s ease;
+    }
+
+    .custom-toggler-icon::before {
+        top: -8px;
+    }
+
+    .custom-toggler-icon::after {
+        top: 8px;
+    }
+
+    .navbar-toggler.collapsed .custom-toggler-icon {
+        background: #ff00ff;
+    }
+
+    .navbar-toggler.collapsed .custom-toggler-icon::before {
+        top: 0;
+        transform: rotate(45deg);
+    }
+
+    .navbar-toggler.collapsed .custom-toggler-icon::after {
+        top: 0;
+        transform: rotate(-45deg);
+    }
 
         h1 {
-            font-size: 3rem;
-            margin-top: 20px;
+            font-size: 4rem;
             text-align: center;
-            color: #800000;
+            margin-top: 80px;
+            background: linear-gradient(90deg, #00ffcc, #ff00ff, #ffea00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textGlow 5s infinite alternate;
         }
 
-        .card {
-            background-color: #f9f9f9; /* Light gray cards */
-            color: #3c3c3c;
-            border: 1px solid #ccc;
-            transition: transform 0.3s ease;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 18rem;
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 15px #00ffcc, 0 0 30px #ff00ff; }
+            100% { text-shadow: 0 0 25px #ffea00, 0 0 40px #ff00ff; }
         }
 
-        .card img {
-    width: 100%;  /* Ensure full width */
-    height: auto; /* Set height to auto for proportional scaling */
-    object-fit: contain;  /* Ensures the image scales to fit the card without being cropped */
-    transition: transform 0.3s ease;
-}
-
-
-        .card-body {
-            text-align: center;
-            padding: 10px;
+        .divider {
+            height: 5px;
+            background: linear-gradient(90deg, #00ffcc, #ff00ff, #ffea00);
+            border-radius: 50px;
+            margin: 30px auto;
+            width: 70%;
+            animation: moveDivider 8s infinite alternate;
         }
 
-        .card:hover {
-            transform: scale(1.05); /* Slightly enlarge the card on hover */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .card img:hover {
-            transform: scale(1.1); /* Slightly enlarge image on hover */
+        @keyframes moveDivider {
+            0% { width: 50%; }
+            100% { width: 80%; }
         }
 
         .book-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 50px 20px;
         }
 
-        .modal-content {
-            display: flex;
-            justify-content: space-between;
-            background-color: #fff;
-            border-radius: 10px;
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
         }
 
-        .modal-body {
+        .card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(255, 0, 255, 0.6);
+        }
+
+        .card-body {
             padding: 20px;
+            text-align: center;
         }
 
-        .modal-body img {
-            max-width: 100%; /* Ensure the image does not overflow */
-            height: auto;
+        .card-body h2 {
+            font-size: 1.5rem;
+            color: #00ffcc;
         }
 
-        .modal-body h3, .modal-body p {
-            font-size: 1.1rem;
+        .btn-warning {
+            background: linear-gradient(90deg, #00ffcc, #ff00ff);
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px #ff00ff;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg">
+<nav class="navbar navbar-expand-lg fixed-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">Recommender Books</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav">
+        <a class="navbar-brand" href="/">Book Recommender</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="custom-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="/recommend">Recommend</a></li>
             </ul>
@@ -115,60 +187,40 @@
     </div>
 </nav>
 
-<div class="container">
-    <h1>Recommend Books</h1>
+<h1>Recommend Books</h1>
+<div class="divider"></div>
 
-    <form action="/recommend_books" method="post">
-        <input name="user_input" type="text" class="form-control" placeholder="Enter the Book Name">
-        <br>
-        <input type="submit" class="btn btn-lg btn-warning" value="Recommend">
+<div class="container">
+    <form action="/recommend_books" method="post" class="mb-5">
+        <input name="user_input" type="text" class="form-control form-control-lg mb-3" placeholder="Enter the Book Name">
+        <input type="submit" class="btn btn-warning w-100" value="Recommend">
     </form>
 
-    <br>
     {% if message %}
         <h3 class="text-center text-danger">{{ message }}</h3>
     {% endif %}
 
-
-        {% if data %}
-        <div class="text-center">
-            <h1>Top 10 Recommended Books for {{ data[0][0] }}</h1>
-            <br>
+    {% if data %}
+        <div class="text-center mb-4">
+            <h2>Top 10 Recommended Books for {{ data[0][0] }}</h2>
         </div>
         <div class="book-container">
-        <!-- Loop through the books in data -->
-        {% for i in data %}
-        <div class="card" style="width: 18rem;" data-bs-toggle="modal" data-bs-target="#bookModal{{ loop.index }}">
-            <img class="card-img-top" src="{{ i[2] }}" alt="{{ i[0] }} image">
-            <div class="card-body">
-                <p>{{ i[0] }}</p>
-                <p><strong>Author:</strong> {{ i[1] }}</p>
-                <p><strong>Year:</strong> {{ i[3] }}</p> <!-- Display year -->
-            </div>
-        </div>
-
-        <!-- Modal for each book -->
-        <div class="modal fade" id="bookModal{{ loop.index }}" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div>
-                            <p>{{ i[0] }}</p>
-                            <p><strong>Author:</strong> {{ i[1] }}</p>
-                            <p><strong>Year:</strong> {{ i[3] }}</p> <!-- Display year in modal as well -->
-                        </div>
-                        <img src="{{ i[2] }}" alt="Book Image">
-                    </div>
+            {% for i in data %}
+            <div class="card">
+                <img src="{{ i[2] }}" alt="{{ i[0] }} image">
+                <div class="card-body">
+                    <h2>{{ i[0] }}</h2>
+                    <p><strong>Author:</strong> {{ i[1] }}</p>
+                    <p><strong>Year:</strong> {{ i[3] }}</p>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-        {% else %}
-        <p>No books to display. Please check the input.</p>
-        {% endif %}
-    </div>
+    {% else %}
+        <p class="text-center">No books to display. Please check the input.</p>
+    {% endif %}
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-TT3z5l1zmFjWFOzTNVYm8FfyekZT+3pONg9rsDQ9IUujMlOWrLGMHspF9b8dd8Sy" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
