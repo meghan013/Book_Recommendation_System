@@ -21,7 +21,6 @@ app = Flask(__name__)
 def index():
     if popular_df is None:
         return "<h1>Error: Data files could not be loaded.</h1>", 500
-
     try:
         return render_template('index.html',
                                book_name=list(popular_df['Book-Title'].values),
@@ -39,7 +38,7 @@ def recommend_ui():
     return render_template('recomend.html', data=[], message="Enter a book title to get recommendations.")
 
 @app.route('/recommend_books', methods=['POST'])
-def recommend():
+def recommend_books():
     if pt is None or similarity_score is None:
         return render_template('recomend.html', data=[], message="Error: Data files could not be loaded.")
 
@@ -47,19 +46,29 @@ def recommend():
     if not user_input:
         return render_template('recomend.html', data=[], message="Please enter a book title.")
 
-    book_titles = [title.lower() for title in pt.index]
-    matches = get_close_matches(user_input, book_titles, n=1, cutoff=0.6)
+    # Convert index to lowercase for case-insensitive matching
+    book_titles = {title.lower(): title for title in pt.index}
 
-    if not matches:
-        return render_template('recomend.html', data=[], message="No books found for the input.")
+    # **Step 1: Check for exact match first**
+    if user_input in book_titles:
+        matched_title = book_titles[user_input]
+    else:
+        # **Step 2: Use fuzzy matching only if exact match isn't found**
+        matches = get_close_matches(user_input, book_titles.keys(), n=3, cutoff=0.4)
+        if matches:
+            matched_title = book_titles[matches[0]]
+        else:
+            print(f"No matches found for input: {user_input}")
+            return render_template('recomend.html', data=[], message="No books found for the input.")
 
-    matched_title = matches[0].title()
+    print(f"Matched Title: {matched_title}")
 
+    # Get the index of the matched book
     if matched_title not in pt.index:
         return render_template('recomend.html', data=[], message="No books found for the input.")
 
     index = np.where(pt.index == matched_title)[0][0]
-    similar_items = sorted(list(enumerate(similarity_score[index])), key=lambda x: x[1], reverse=True)[0:10]
+    similar_items = sorted(list(enumerate(similarity_score[index])), key=lambda x: x[1], reverse=True)[1:11]
 
     data = []
     for i in similar_items:
@@ -73,9 +82,10 @@ def recommend():
             ]
             data.append(item)
 
-    return render_template('recomend.html', data=data, message="Recommendations found!")
+    return render_template('recomend.html', data=data, message=f"Top 10 Recommended Books for {matched_title}")
 
-# Ensure correct PORT usage for Vercel or other platforms
+
+# Ensure correct PORT usage for deployment
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
